@@ -36,6 +36,8 @@
 
 Deep Learning is a **subfield of Machine Learning** where models automatically learn patterns, representations, and decision boundaries directly from raw data — using **multi-layer neural networks** trained via **gradient-based optimization**.
 
+Deep learning algorithms uses multiple layers to progressively extract higher-level features from the raw input. For example, in image processing, lower layers may identify edges, while higher layers may identify the concepts relevant to a human such as digits or letter or faces.
+
 Unlike traditional machine learning, where humans manually engineer features (e.g., extracting edges from images or n-grams from text), deep learning allows the model to discover these features on its own through training.
 
 At its core, deep learning is built on five pillars:
