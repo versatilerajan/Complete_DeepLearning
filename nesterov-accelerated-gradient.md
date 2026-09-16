@@ -50,7 +50,7 @@ $$\tilde{\mathbf{w}}_t = \mathbf{w}_t + \beta v_{t-1}$$
 
 and take the gradient *there*. The physical analogy: classical momentum is a ball rolling blindly downhill, reacting to the slope under its feet. NAG is a ball that can see a short distance ahead. As it approaches the bottom of a valley, the look-ahead point is already up the opposite wall, where the gradient points *backwards*. So NAG starts braking before it reaches the bottom, while momentum only starts braking after it has passed it.
 
-![One NAG iteration](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/02_nag_flow.png)
+![One NAG iteration](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/02_nag_flow.png)
 
 *The five stages of a single NAG iteration. Stages 2 and 3 are the entire contribution of the method: jump to the look-ahead point, and take the gradient there. Stages 4 and 5 are identical to classical momentum — the velocity update and the parameter update are unchanged. This is why NAG costs essentially nothing extra: it is the same number of gradient evaluations per step, just evaluated at a different location.*
 
@@ -67,7 +67,7 @@ $$\tilde{\mathbf{w}}_t = \mathbf{w}_t + \beta v_{t-1}$$
 $$v_t = \beta v_{t-1} - \eta \nabla L(\tilde{\mathbf{w}}_t)$$
 $$\mathbf{w}_{t+1} = \mathbf{w}_t + v_t$$
 
-![Update rules compared](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/01_update_rules.png)
+![Update rules compared](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/01_update_rules.png)
 
 *The two update rules with the single differing term highlighted. The velocity recursion has the same shape in both — $\beta v_{t-1}$ minus a scaled gradient — and the parameter update is character-for-character identical. The only change is the argument to $\nabla L$: the current position $\mathbf{w}_t$ for momentum, the look-ahead position $\tilde{\mathbf{w}}_t$ for NAG. Everything else in this document follows from that substitution.*
 
@@ -77,7 +77,7 @@ Note the computational cost: one gradient evaluation per iteration, same as mome
 
 The mechanism is easiest to see by decomposing one step into its two component vectors, starting from an identical state $(\mathbf{w}_t, v_{t-1})$.
 
-![Look-ahead vector decomposition](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/05_lookahead_vectors.png)
+![Look-ahead vector decomposition](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/05_lookahead_vectors.png)
 
 *One step of each method from the same starting state on the quadratic bowl, with real computed vectors. Both begin with the identical committed momentum carry $\beta v_{t-1}$ (amber). They differ in where the gradient correction is measured: momentum measures at $\mathbf{w}_t = (-2.81, 2.35)$ and gets $\nabla L = (-2.81, 47.04)$; NAG measures at the look-ahead point $(-1.53, 2.77)$ and gets $(-1.53, 55.30)$. The look-ahead gradient is both larger in the steep direction and rotated by 1.83°, and the resulting step lands NAG at distance 1.490 from the minimum versus momentum's 1.549.*
 
@@ -103,7 +103,7 @@ $$L(w_1, w_2) = \tfrac{1}{2}\left(w_1^2 + 20 w_2^2\right)$$
 
 a bowl 20× steeper in $w_2$ than $w_1$ (condition number 20). All three methods start at $(-9, 3)$ with identical hyperparameters $\eta = 0.045$, $\beta = 0.9$, and run for 100 steps.
 
-![Trajectories on the quadratic](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/03_trajectories_quadratic.png)
+![Trajectories on the quadratic](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/03_trajectories_quadratic.png)
 
 *Actual computed trajectories, not illustrations. Vanilla GD (left) cannot oscillate but is crippled: it damps the steep direction immediately and then crawls along the flat axis, never arriving. Classical momentum (centre) escapes the flat-direction problem but is visibly chaotic, swinging wildly across the valley and looping around the minimum repeatedly. NAG (right) damps the steep direction just as fast as GD, then travels the flat direction at momentum-like speed, producing a nearly straight path. The final losses differ by five orders of magnitude.*
 
@@ -119,7 +119,7 @@ Measured results after 100 steps:
 
 NAG reached the convergence threshold in **2.5× fewer steps** than momentum, travelled **60% less total distance**, and ended with a final loss roughly **9,000× lower**. The path-length figure is the clearest single summary of what NAG fixes: momentum covers 49.3 units of ground to make 9.5 units of progress, because most of its motion is sideways oscillation. NAG covers 19.9.
 
-![Loss curves and oscillation](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/04_loss_and_oscillation.png)
+![Loss curves and oscillation](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/04_loss_and_oscillation.png)
 
 *Left: loss against iteration on a log scale. NAG (blue) descends steadily and keeps descending; momentum (red) descends in a jagged staircase, each plateau corresponding to a swing across the valley where progress stalls. Right: the raw $w_2$ coordinate over time, which is the oscillation itself. Momentum's envelope decays slowly and is still visibly ringing at iteration 100. Note that NAG crosses zero more often but with far smaller amplitude — the oscillation is faster and much more heavily damped, which is what a brake does.*
 
@@ -127,7 +127,7 @@ NAG reached the convergence threshold in **2.5× fewer steps** than momentum, tr
 
 To isolate overshoot from ill-conditioning, here is a 1-D bowl $L(w) = w^2$ starting at $w_0 = -5$, with $\eta = 0.1$, $\beta = 0.9$. There is no flat direction and no conditioning problem — the only thing being measured is how far past the minimum each method flies.
 
-![1-D overshoot](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/06_overshoot_1d.png)
+![1-D overshoot](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/06_overshoot_1d.png)
 
 *Both methods cross the minimum 12 times in 80 iterations, but the amplitudes differ sharply. Momentum's first excursion past zero reaches 3.54 — it travels 71% of the way back up the opposite side of the bowl. NAG's reaches 1.66, less than half as far. More telling is the endgame: NAG settles permanently within 0.05 of the minimum by iteration 28 and finishes at $-6\times10^{-6}$, while momentum never settles within 0.05 at all and is still at $-0.0535$ after 80 iterations.*
 
@@ -145,7 +145,7 @@ It is tempting to conclude that NAG is "momentum with brakes, therefore safer". 
 
 The experiment sweeps a grid of $(\eta, \beta)$ pairs on the same quadratic and records whether each run converged or blew up.
 
-![Stability regions](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/07_stability_regions.png)
+![Stability regions](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/07_stability_regions.png)
 
 *Measured convergence over 300 steps: light = converged, dark = diverged. The amber line is the closed-form linear-stability prediction, the dashed line the measured boundary — they agree almost exactly, confirming the sweep is measuring the real thing. The striking feature is the difference in area: momentum's stable region widens as $\beta$ increases, while NAG's narrows.*
 
@@ -153,7 +153,7 @@ For a quadratic with maximum curvature $L$, the stability limits are:
 
 $$\text{momentum:}\quad \eta < \frac{2(1+\beta)}{L} \qquad\qquad \text{NAG:}\quad \eta < \frac{2(1+\beta)}{L(1+2\beta)}$$
 
-![Critical learning rate](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/08_critical_lr.png)
+![Critical learning rate](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/08_critical_lr.png)
 
 *The largest stable learning rate for each method as a function of $\beta$. Momentum's rises with $\beta$; NAG's falls. They are identical at $\beta = 0$ (where both reduce to plain gradient descent, limit $2/L$) and diverge steadily after that.*
 
@@ -174,17 +174,17 @@ Everything so far has been on quadratics. Here is a genuine (if small) deep lear
 
 First, a learning-rate sweep, because comparing optimisers at a single shared learning rate is a badly flawed methodology — it just measures which method happens to like that particular value.
 
-![Learning rate sweep](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/11_lr_sweep.png)
+![Learning rate sweep](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/11_lr_sweep.png)
 
 *Training loss after 40 epochs against learning rate, median of 3 seeds. Both momentum methods dominate plain SGD across the entire usable range — at $\eta=0.05$ they reach a loss ~35× lower. But the right-hand edge shows the stability finding from Section 7 reappearing on a real network: at $\eta = 0.25$ momentum still trains (loss 0.071) while NAG has already collapsed (loss 1.74). NAG's optimum is slightly lower and its cliff noticeably earlier.*
 
 This sweep also caught a bug in the making. My first attempt ran all three methods at $\eta = 0.25$, and both momentum and NAG produced garbage — final training losses near 1.0 with test accuracy in the 40–60% range. That is not a result about NAG; it is a result about an effective step size of $\eta/(1-\beta) = 2.5$. At $\eta = 0.12$, one NAG seed out of five destabilised late in training (final loss 0.303 versus ~0.0003 for the other four) while momentum stayed stable on all five — the same asymmetry again. The head-to-head below therefore uses $\eta = 0.08$ for both momentum methods, comfortably inside the stable region for both, and $\eta = 0.25$ for plain SGD, its own best stable value.
 
-![MLP training curves](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/09_mlp_digits.png)
+![MLP training curves](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/09_mlp_digits.png)
 
 *Mean over 5 seeds, shaded band showing min–max across seeds. NAG (blue) is clearly ahead of momentum (red) for the first ~15 epochs — it reaches any given loss level sooner — after which the two curves merge and are indistinguishable. Plain SGD (grey) is both slower and dramatically noisier, its min–max band spanning orders of magnitude. On test accuracy, NAG reaches the ~97% plateau within about 6 epochs, momentum takes ~10, SGD takes ~22.*
 
-![Epochs to threshold](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/10_epochs_to_threshold.png)
+![Epochs to threshold](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/10_epochs_to_threshold.png)
 
 *Mean epochs required to first reach a training loss of 0.10. NAG needed 4.2, momentum 6.0, plain SGD 10.6 — NAG is 30% faster than momentum and 2.5× faster than SGD to this milestone. Per-seed values were NAG [5, 3, 4, 4, 5] and momentum [6, 5, 7, 7, 5], so the gap is consistent across every seed rather than driven by an outlier.*
 
@@ -205,11 +205,11 @@ The video's stated drawback is that NAG's damping makes it worse at escaping loc
 
 The landscape is an asymmetric double well, $L(w) = 0.05w^4 - 0.6w^2 + 0.55w$, which has a shallow local minimum at $w = 2.176$ (depth $-0.523$), a barrier at $w = 0.476$ (height $0.128$), and the global minimum at $w = -2.653$ (depth $-3.205$). The barrier stands $0.652$ above the local minimum. Each run starts at $w = 4.176$, up the outer wall, so the ball has a run-up: it rolls down through the shallow basin and either carries enough momentum over the barrier or does not. $\eta = 0.02$, 800 steps, sweeping $\beta$ from 0 to 0.99.
 
-![Local minima escape](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/12_local_minima_escape.png)
+![Local minima escape](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/12_local_minima_escape.png)
 
 *Left: the test landscape with the start point and the path the ball must take. Right: escape outcome against $\beta$, zoomed on the interesting region. Momentum escapes the shallow basin once $\beta \geq 0.87$; NAG requires $\beta \geq 0.90$. In the shaded band ($\beta$ = 0.87, 0.88, 0.89) momentum reaches the global minimum and NAG does not — it gets braked at the barrier and falls back.*
 
-![Escape trajectories](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/13_escape_trajectories.png)
+![Escape trajectories](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/13_escape_trajectories.png)
 
 *The two trajectories at $\beta = 0.88$, the middle of the differing band. Momentum (red) crests the barrier and settles at the global minimum $w = -2.653$. NAG (blue) approaches the barrier, gets slowed by the look-ahead gradient — which, at the barrier's near side, points backwards — and falls back into the shallow basin, ending at $w = 2.176$. Same landscape, same start, same $\eta$, same $\beta$; the only difference is where the gradient was measured.*
 
@@ -233,7 +233,7 @@ $$\theta_{t+1} = \theta_t + (1+\beta)v_t - \beta v_{t-1}$$
 
 Now the gradient is evaluated at the tracked variable, which is exactly what a framework optimiser can do. **Keras** implements this as `v = β·v - lr·g; x = x + β·v - lr·g`, and **PyTorch** as `buf = μ·buf + g; d = g + μ·buf; x = x - lr·d`. These look different from each other and from the equation above; all three are algebraically identical.
 
-![Framework equivalence](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/15_framework_equivalence.png)
+![Framework equivalence](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/15_framework_equivalence.png)
 
 *Numerical verification on a random 5-dimensional convex quadratic over 200 iterations. Left: the Keras form and the PyTorch form each track the textbook method's look-ahead sequence $\tilde{\mathbf{w}}_t$ to a maximum absolute difference of $4.4\times10^{-16}$ — machine precision, i.e. they are the same algorithm. The red line shows the same Keras form compared against the textbook $\mathbf{w}_t$ sequence instead, differing by 0.103 — confirming the frameworks genuinely track a different (shifted) variable, not merely a rounding-level variant. Right: both descend identically.*
 
@@ -405,7 +405,7 @@ Gotchas worth knowing:
 
 ## 14. Key takeaways
 
-![Summary of all measurements](https://raw.githubusercontent.com/USERNAME/REPO_NAME/main/images/14_summary_table.png)
+![Summary of all measurements](https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/14_summary_table.png)
 
 *Every measurement in this document in one place, collated automatically from the JSON output of the experiment scripts rather than typed by hand. Reading down the NAG column: it wins decisively on convergence speed and overshoot, ties on final model quality, and loses on both maximum stable learning rate and local-minimum escape. That mixed picture is the accurate summary of the method.*
 
@@ -428,25 +428,9 @@ Gotchas worth knowing:
 - **Dozat, T. (2016).** *Incorporating Nesterov momentum into Adam.* ICLR 2016 Workshop. — NAdam, the adaptive-optimiser analogue.
 - **Goh, G. (2017).** *Why Momentum Really Works.* Distill. — Interactive visual treatment of momentum and conditioning. Excellent companion to Sections 5–7.
 
-## 16. Reproducing these results
-
-Every figure and number in this document was produced by the scripts in this repository. Requires `numpy`, `matplotlib`, `scikit-learn`.
-
-```
-optimizers.py           # GD / momentum / NAG reference implementations
-style.py                # shared plot styling
-exp0_diagrams.py        # figures 1, 2, 14
-exp1_quadratic.py       # figures 3, 4   — ill-conditioned quadratic
-exp2_stability.py       # figures 7, 8   — stability sweep
-exp3_geometry.py        # figures 5, 6   — look-ahead geometry, 1-D overshoot
-exp4_mlp.py             # figures 9,10,11 — neural network (slowest, ~5 min)
-exp5_escape.py          # figures 12, 13 — local minima escape
-exp6_equivalence.py     # figure 15      — framework equivalence
-nag_from_scratch.py     # the Section 11 listing
-```
-
 Run `exp1` through `exp6` first, then `exp0_diagrams.py` last — the summary table reads its numbers from the JSON result files the others write.
 
 ---
 
 *Part of an ongoing deep learning notes series. Previous: [momentum.md](momentum.md). Next: [adagrad.md](adagrad.md).*
+ this is how real ID use to show image fix it all across md file (https://raw.githubusercontent.com/versatilerajan/deepcontent/main/images/01_loss_landscape_views.png)
